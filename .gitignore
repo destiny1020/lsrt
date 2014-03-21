@@ -1,4 +1,11 @@
-*.class
+bin
+target
+.classpath
+.project
+.settings
+.metadata
+.#webclasspath
+.gitattributes
 
 # Package Files #
 *.jar
