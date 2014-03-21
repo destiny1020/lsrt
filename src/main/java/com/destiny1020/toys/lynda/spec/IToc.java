@@ -1,5 +1,8 @@
 package com.destiny1020.toys.lynda.spec;
 
+import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -21,17 +24,30 @@ public interface IToc {
 	 * @return Jsoup Elements Object
 	 */
 	Elements getChapters(String url);
-	
+
 	/**
-	 * Get the CSS selector for the chapter header, should be used for a certain chapter.
+	 * Get the CSS selector for the chapter header, should be used under a certain chapter element.
 	 * @return
 	 */
 	String getChapterHeaderSelector();
-	
+
 	/**
 	 * Get the Chapter Header for a certain chapter.
 	 * @param chapter
 	 * @return
 	 */
 	String getChapterHeader(Element chapter);
+
+	/**
+	 * Get the CSS selector for the sections under a certain chapter, should be used under a certain chapter element.
+	 * @return
+	 */
+	String getSectionSelector();
+
+	/**
+	 * Get the list for all the sections under the chapter.
+	 * @param chapter
+	 * @return
+	 */
+	List<Pair<String, String>> getSections(Element chapter);
 }
