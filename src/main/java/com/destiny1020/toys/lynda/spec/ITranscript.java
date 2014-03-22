@@ -1,9 +1,5 @@
 package com.destiny1020.toys.lynda.spec;
 
-import org.jsoup.nodes.Element;
-
-import com.destiny1020.toys.lynda.model.TranscriptPackage;
-
 /**
  * Used to define the supported operations for extracting the transcripts.
  * 
@@ -12,10 +8,17 @@ import com.destiny1020.toys.lynda.model.TranscriptPackage;
  */
 public interface ITranscript {
 
-	String getTranscriptSelector();
+	/**
+	 * Fill in the TranscriptPackage instance in the passed in section.
+	 * @param section
+	 */
+	void fetchTranscripts();
 
-	Element getTranscripts(String url);
-
-	TranscriptPackage getTranscriptsWithTimeline(String url);
+	/**
+	 * Fill in the TranscriptPackage instance in the passed in section, meanwhile translating will be executed by langCd.
+	 * @param section
+	 * @param langCd
+	 */
+	void fetchTranscripts(String langCd);
 
 }

@@ -6,12 +6,11 @@ import java.net.URLEncoder;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.destiny1020.toys.lynda.model.TranscriptPackage;
-import com.destiny1020.toys.lynda.spec.ITranscript;
-import com.destiny1020.toys.lynda.spec.impl.TranscriptGetter;
+import com.destiny1020.toys.lynda.model.Course;
+import com.destiny1020.toys.lynda.model.Section;
 import com.gtranslate.Translator;
 
-public class TranscriptGetterTest {
+public class SectionTest {
 
 	@Test
 	public void testTranslator() throws UnsupportedEncodingException {
@@ -27,13 +26,21 @@ public class TranscriptGetterTest {
 
 	@Test
 	public void testGetTranscript() {
-		ITranscript transcript = new TranscriptGetter();
+		String url = "http://www.lynda.com/Bootstrap-tutorials/Up-Running-Bootstrap-3/133339-2.html";
+		Course course = new Course(url);
 
-		String url = "http://www.lynda.com/Bootstrap-tutorials/Adding-JavaScript-Bootstrap-HTML-file/133339/151278-4.html";
+		// fetch the chapters
+		course.fetchChapters();
 
-		TranscriptPackage tp = transcript.getTranscriptsWithTimeline(url);
+		// get the section of "Adding JavaScript to a Bootstrap HTML file"
+		Section section = course.getChapters().get(1).getSubSections().get(4);
+
+		// fetch the tp
+		section.fetchTranscripts();
 		String expectedTitle = "Adding JavaScript to a Bootstrap HTML file";
-		Assert.assertEquals(expectedTitle, tp.getTitle());
-		Assert.assertEquals(143, tp.getTranscripts().size());
+		int expectedSize = 143;
+		Assert.assertEquals(expectedTitle, section.getTitle());
+		Assert.assertEquals(expectedSize, section.getTp().getTranscripts()
+				.size());
 	}
 }

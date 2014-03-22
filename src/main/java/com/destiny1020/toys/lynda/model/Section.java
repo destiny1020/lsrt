@@ -1,4 +1,4 @@
-package com.destiny1020.toys.lynda.spec.impl;
+package com.destiny1020.toys.lynda.model;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -11,54 +11,69 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.destiny1020.toys.lynda.constant.Constants;
-import com.destiny1020.toys.lynda.model.TranscriptPackage;
 import com.destiny1020.toys.lynda.spec.ITranscript;
 import com.destiny1020.toys.lynda.util.TimeUtils;
 import com.gtranslate.Translator;
 
-public class TranscriptGetter implements ITranscript {
+public class Section extends ResourceBase implements ITranscript {
 
 	// attribute keys
 	private static final String ATTR_DATA_DURATION = "data-duration";
 
-	private static final String SELECTOR_TRANSCRIPT = ".video-transcript";
-	private static final String SELECTOR_TRANSCRIPT_TITLE = "> h2";
+	// selectors
 	private static final String SELECTOR_TRANSCRIPT_CONTENT = "span.transcript";
 
-	public String getTranscriptSelector() {
-		return SELECTOR_TRANSCRIPT;
+	private final Chapter parentChapter;
+	private final String url;
+	private TranscriptPackage tp;
+
+	public Section(int number, String title, String url, Element section,
+			Chapter parentChapter) {
+		super(number, title, section);
+		this.url = url;
+		this.parentChapter = parentChapter;
 	}
 
-	public Element getTranscripts(String url) {
+	public TranscriptPackage getTp() {
+		return tp;
+	}
+
+	public void setTp(TranscriptPackage tp) {
+		this.tp = tp;
+	}
+
+	public Chapter getParentChapter() {
+		return parentChapter;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void fetchTranscripts(String langCd) {
 		Document doc;
 		int retryNumber = 5;
 		while (retryNumber > 0) {
 			try {
 				doc = Jsoup.connect(url).get();
-				Element transcripts = doc.select(getTranscriptSelector())
-						.first();
-				return transcripts;
+				Elements transcripts = doc.select(SELECTOR_TRANSCRIPT_CONTENT);
+				TranscriptPackage tp = generateTranscriptPackage(transcripts,
+						langCd);
+				// fill in the tp field for the section instance
+				this.setTp(tp);
+				return;
 			} catch (IOException e) {
 				retryNumber--;
 			}
 		}
-
-		return null;
 	}
 
-	public TranscriptPackage getTranscriptsWithTimeline(String url) {
-		Element t = getTranscripts(url);
-		if (t == null) {
-			return null;
-		}
+	public void fetchTranscripts() {
+		fetchTranscripts(Constants.LANG_OUTPUT);
+	}
 
-		// retrieve the title
-		System.out.println(t.html());
-		String title = t.select(SELECTOR_TRANSCRIPT_TITLE).first().text();
-
-		// retrieve the content
-		Elements transcripts = t.select(SELECTOR_TRANSCRIPT_CONTENT);
-
+	private TranscriptPackage generateTranscriptPackage(Elements transcripts,
+			String langCd) {
 		transcripts.add(transcripts.get(transcripts.size() - 1));
 		List<Pair<String, Pair<String, String>>> results = new LinkedList<Pair<String, Pair<String, String>>>();
 
@@ -74,11 +89,12 @@ public class TranscriptGetter implements ITranscript {
 					next.attr(ATTR_DATA_DURATION));
 			subtitle2 = current.text();
 			subtitle1 = translator.translate(subtitle2, Constants.LANG_INPUT,
-					Constants.LANG_OUTPUT);
+					langCd);
 
 			results.add(Pair.of(timeline, Pair.of(subtitle1, subtitle2)));
 		}
 
-		return new TranscriptPackage(title, results);
+		return new TranscriptPackage(results);
 	}
+
 }

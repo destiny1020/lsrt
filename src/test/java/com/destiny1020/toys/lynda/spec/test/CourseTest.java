@@ -2,22 +2,22 @@ package com.destiny1020.toys.lynda.spec.test;
 
 import java.util.List;
 
-import org.apache.commons.lang3.tuple.Pair;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.destiny1020.toys.lynda.spec.IToc;
-import com.destiny1020.toys.lynda.spec.impl.TocGetter;
+import com.destiny1020.toys.lynda.model.Chapter;
+import com.destiny1020.toys.lynda.model.Course;
+import com.destiny1020.toys.lynda.model.Section;
 
-public class TocGetterTest {
+public class CourseTest {
 
 	@Test
 	public void testGetChapters() {
-		IToc toc = new TocGetter();
-
 		String url = "http://www.lynda.com/Bootstrap-tutorials/Up-Running-Bootstrap-3/133339-2.html";
+		Course course = new Course(url);
+
+		// fetch the chapters
+		course.fetchChapters();
 
 		String chapter0 = "Introduction";
 		String chapter1 = "1. Bootstrap Introduction and Download";
@@ -30,19 +30,21 @@ public class TocGetterTest {
 		String[] expectedResults = new String[] { chapter0, chapter1, chapter2,
 				chapter3, chapter4, chapter5, chapterE };
 
-		Elements chapters = toc.getChapters(url);
-		String actual = null;
+		List<Chapter> chapters = course.getChapters();
+		Chapter chapter;
 		for (int idx = 0; idx < chapters.size(); idx++) {
-			actual = toc.getChapterHeader(chapters.get(idx));
-			Assert.assertEquals(expectedResults[idx], actual);
+			chapter = chapters.get(idx);
+			Assert.assertEquals(expectedResults[idx], chapter.getTitle());
 		}
 	}
 
 	@Test
 	public void testGetSections() {
-		IToc toc = new TocGetter();
-
 		String url = "http://www.lynda.com/Bootstrap-tutorials/Up-Running-Bootstrap-3/133339-2.html";
+		Course course = new Course(url);
+
+		// fetch the chapters
+		course.fetchChapters();
 
 		String section21 = "Exploring Bootstrap's grid system";
 		String section22 = "Creating new rows and cells";
@@ -70,13 +72,13 @@ public class TocGetterTest {
 				sectionUrl23, sectionUrl24, sectionUrl25, sectionUrl26,
 				sectionUrl27, sectionUrl28 };
 
-		Elements chapters = toc.getChapters(url);
-		Element chapter2 = chapters.get(2);
-		List<Pair<String, String>> sections = toc.getSections(chapter2);
-		for (int idx = 0; idx < sections.size(); idx++) {
-			Pair<String, String> pair = sections.get(idx);
-			Assert.assertEquals(expectedResults1[idx], pair.getLeft());
-			Assert.assertEquals(expectedResults2[idx], pair.getRight());
+		List<Chapter> chapters = course.getChapters();
+		Chapter chapter2 = chapters.get(2);
+		Section section;
+		for (int idx = 0; idx < chapter2.getSubSections().size(); idx++) {
+			section = chapter2.getSubSections().get(idx);
+			Assert.assertEquals(expectedResults1[idx], section.getTitle());
+			Assert.assertEquals(expectedResults2[idx], section.getUrl());
 		}
 	}
 
