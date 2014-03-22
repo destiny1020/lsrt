@@ -15,7 +15,7 @@ import com.destiny1020.toys.lynda.spec.IToc;
 /**
  * An implementation for the IToc.
  * 
- * @author Ruixiang Jiang
+ * @author destiny1020
  *
  */
 public class TocGetter implements IToc {

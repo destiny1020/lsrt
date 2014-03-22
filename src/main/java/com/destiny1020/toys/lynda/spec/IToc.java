@@ -9,7 +9,7 @@ import org.jsoup.select.Elements;
 /**
  * Used to define the supported operations for extracting the Table of Contents.
  * 
- * @author Ruixiang Jiang
+ * @author destiny1020
  */
 public interface IToc {
 
