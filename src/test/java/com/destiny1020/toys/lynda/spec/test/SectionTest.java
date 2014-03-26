@@ -20,7 +20,7 @@ public class SectionTest {
 		String encodedText = URLEncoder.encode(text, "utf-8");
 		String translated = translator.translate(encodedText, "en", "zh-CN");
 
-		String expected = "²»¹ÜÄãÏ²»¶×öËüµÄ·£¿î¡£ :::Äã¿ÉÒÔ°ÑËü½Ğ×örespond.min.js»òrespond.js £¬";
+		String expected = "ä¸ç®¡ä½ å–œæ¬¢åšå®ƒçš„ç½šæ¬¾ã€‚ :::ä½ å¯ä»¥æŠŠå®ƒå«åšrespond.min.jsæˆ–respond.js ï¼Œ";
 		Assert.assertEquals(expected, translated);
 	}
 

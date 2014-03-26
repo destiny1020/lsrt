@@ -55,9 +55,9 @@ public class Course implements IToc {
 			this.chapters = results;
 		} catch (IOException e) {
 			e.printStackTrace();
+			this.chapters = Collections.EMPTY_LIST;
 		}
 
-		this.chapters = Collections.EMPTY_LIST;
 	}
 
 	private void parseSections(Chapter chapter) {
