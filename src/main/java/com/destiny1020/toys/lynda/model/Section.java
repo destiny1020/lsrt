@@ -1,5 +1,8 @@
 package com.destiny1020.toys.lynda.model;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,6 +69,9 @@ public class Section extends ResourceBase implements ITranscript {
 				retryNumber--;
 			}
 		}
+
+		// means thr retryNumber has become to 0...
+		// TODO
 	}
 
 	public void fetchTranscripts() {
@@ -97,4 +103,50 @@ public class Section extends ResourceBase implements ITranscript {
 		return new TranscriptPackage(results);
 	}
 
+	public void output() {
+		if (tp == null) {
+			// TODO: show the error msg
+			return;
+		}
+
+		BufferedWriter bw;
+		File destFile = new File(getTitle() + Constants.SRT_EXT);
+		try {
+			if (!destFile.exists()) {
+				destFile.createNewFile();
+			}
+			FileWriter fw = new FileWriter(destFile.getAbsoluteFile());
+			bw = new BufferedWriter(fw);
+
+			// start to output the tp instance to the srt file
+			List<Pair<String, Pair<String, String>>> transcripts = tp
+					.getTranscripts();
+			Pair<String, Pair<String, String>> snippet;
+			for (int idx = 1; idx <= transcripts.size(); idx++) {
+				snippet = transcripts.get(idx - 1);
+				writeSnippet(bw, snippet, idx);
+			}
+
+			bw.flush();
+			bw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	private void writeSnippet(BufferedWriter bw,
+			Pair<String, Pair<String, String>> snippet, int idx)
+			throws IOException {
+		bw.write(String.valueOf(idx));
+		bw.write(Constants.FILE_SEPARATOR);
+		bw.write(snippet.getLeft());
+		bw.write(Constants.FILE_SEPARATOR);
+		bw.write(snippet.getRight().getLeft());
+		bw.write(Constants.FILE_SEPARATOR);
+		bw.write(snippet.getRight().getRight());
+		bw.write(Constants.FILE_SEPARATOR);
+		bw.write(Constants.FILE_SEPARATOR);
+	}
 }

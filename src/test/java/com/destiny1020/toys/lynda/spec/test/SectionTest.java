@@ -43,4 +43,20 @@ public class SectionTest {
 		Assert.assertEquals(expectedSize, section.getTp().getTranscripts()
 				.size());
 	}
+
+	@Test
+	public void testOutputTranscript() {
+		String url = "http://www.lynda.com/Bootstrap-tutorials/Up-Running-Bootstrap-3/133339-2.html";
+		Course course = new Course(url);
+
+		// fetch the chapters
+		course.fetchChapters();
+
+		// get the section of "Adding JavaScript to a Bootstrap HTML file"
+		Section section = course.getChapters().get(1).getSubSections().get(4);
+
+		// fetch the tp
+		section.fetchTranscripts();
+		section.output();
+	}
 }

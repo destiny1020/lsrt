@@ -21,4 +21,9 @@ public interface ITranscript {
 	 */
 	void fetchTranscripts(String langCd);
 
+	/**
+	 * Output the TranscriptPackage as a srt file.
+	 */
+	void output();
+
 }

@@ -6,6 +6,9 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class TranscriptPackage {
 
+	/**
+	 * <Timeline, <Translated Text, Original Text>>
+	 */
 	private List<Pair<String, Pair<String, String>>> transcripts;
 
 	public TranscriptPackage(
