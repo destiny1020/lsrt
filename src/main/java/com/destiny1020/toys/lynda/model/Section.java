@@ -15,6 +15,7 @@ import org.jsoup.select.Elements;
 
 import com.destiny1020.toys.lynda.constant.Constants;
 import com.destiny1020.toys.lynda.spec.ITranscript;
+import com.destiny1020.toys.lynda.util.FileNameUtils;
 import com.destiny1020.toys.lynda.util.TimeUtils;
 import com.gtranslate.Translator;
 
@@ -109,9 +110,21 @@ public class Section extends ResourceBase implements ITranscript {
 			return;
 		}
 
+		String fileDir = String.format("%s/%s", FileNameUtils
+				.replaceInvalidChars(this.parentChapter.getParentCourse()
+						.getName()), FileNameUtils
+				.replaceInvalidChars(this.parentChapter.getTitle()));
+		String filePath = String.format("%s/%d.%s.%s", fileDir, getNumber(),
+				FileNameUtils.replaceInvalidChars(getTitle()),
+				Constants.SRT_EXT);
+
 		BufferedWriter bw;
-		File destFile = new File(getTitle() + Constants.SRT_EXT);
+		File destDir = new File(fileDir);
+		File destFile = new File(filePath);
 		try {
+			if (!destDir.exists()) {
+				destDir.mkdirs();
+			}
 			if (!destFile.exists()) {
 				destFile.createNewFile();
 			}

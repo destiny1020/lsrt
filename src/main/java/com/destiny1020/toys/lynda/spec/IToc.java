@@ -13,4 +13,9 @@ public interface IToc {
 	 */
 	void fetchChapters();
 
+	/**
+	 * Output all the transcripts for the TOC.
+	 */
+	void output();
+
 }

@@ -16,9 +16,6 @@ public class CourseTest {
 		String url = "http://www.lynda.com/Bootstrap-tutorials/Up-Running-Bootstrap-3/133339-2.html";
 		Course course = new Course(url);
 
-		// fetch the chapters
-		course.fetchChapters();
-
 		String chapter0 = "Introduction";
 		String chapter1 = "1. Bootstrap Introduction and Download";
 		String chapter2 = "2. The Bootstrap Grid System";
@@ -42,9 +39,6 @@ public class CourseTest {
 	public void testGetSections() {
 		String url = "http://www.lynda.com/Bootstrap-tutorials/Up-Running-Bootstrap-3/133339-2.html";
 		Course course = new Course(url);
-
-		// fetch the chapters
-		course.fetchChapters();
 
 		String section21 = "Exploring Bootstrap's grid system";
 		String section22 = "Creating new rows and cells";
@@ -80,6 +74,14 @@ public class CourseTest {
 			Assert.assertEquals(expectedResults1[idx], section.getTitle());
 			Assert.assertEquals(expectedResults2[idx], section.getUrl());
 		}
+	}
+
+	@Test
+	public void testOutputTranscripts() {
+		String url = "http://www.lynda.com/Bootstrap-tutorials/Up-Running-Bootstrap-3/133339-2.html";
+		Course course = new Course(url);
+
+		course.output();
 	}
 
 }

@@ -6,10 +6,13 @@ import org.jsoup.nodes.Element;
 
 public class Chapter extends ResourceBase {
 
+	private Course parentCourse;
 	private List<Section> subSections;
 
-	public Chapter(int number, String title, Element chapter) {
+	public Chapter(int number, String title, Element chapter,
+			Course parentCourse) {
 		super(number, title, chapter);
+		this.parentCourse = parentCourse;
 	}
 
 	public List<Section> getSubSections() {
@@ -18,6 +21,14 @@ public class Chapter extends ResourceBase {
 
 	public void setSubSections(List<Section> subSections) {
 		this.subSections = subSections;
+	}
+
+	public Course getParentCourse() {
+		return parentCourse;
+	}
+
+	public void setParentCourse(Course parentCourse) {
+		this.parentCourse = parentCourse;
 	}
 
 }

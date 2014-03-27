@@ -15,6 +15,7 @@ import com.destiny1020.toys.lynda.spec.IToc;
 public class Course implements IToc {
 
 	// selectors below
+	private static final String SELECTOR_COURSE_NAME = ".course-details > h1";
 	private static final String SELECTOR_CHAPTER = "#course-toc-outer > li";
 	private static final String SELECTOR_CHAPTER_TITLE = "h3 a";
 	private static final String SELECTOR_CHAPTER_SECTION = "ol > li > dl > dt a";
@@ -24,7 +25,14 @@ public class Course implements IToc {
 	private List<Chapter> chapters;
 
 	public Course(String url) {
+		this(url, true);
+	}
+
+	public Course(String url, boolean initializeContents) {
 		this.url = url;
+		if (initializeContents) {
+			fetchChapters();
+		}
 	}
 
 	/**
@@ -32,9 +40,18 @@ public class Course implements IToc {
 	 */
 	@SuppressWarnings("unchecked")
 	public void fetchChapters() {
+		// avoid repetitive invocations
+		if (chapters != null && chapters.size() > 0) {
+			return;
+		}
+
 		Document doc;
 		try {
 			doc = Jsoup.connect(url).get();
+			// get the course name first
+			Element courseName = doc.select(SELECTOR_COURSE_NAME).first();
+			name = courseName.text();
+
 			Elements chapters = doc.select(SELECTOR_CHAPTER);
 			List<Chapter> results = new LinkedList<Chapter>();
 
@@ -47,7 +64,7 @@ public class Course implements IToc {
 						.text();
 
 				// parse the sections under current chapter
-				chapterInstance = new Chapter(idx, chapterTitle, chapter);
+				chapterInstance = new Chapter(idx, chapterTitle, chapter, this);
 				results.add(chapterInstance);
 				parseSections(chapterInstance);
 			}
@@ -97,6 +114,18 @@ public class Course implements IToc {
 
 	public void setChapters(List<Chapter> chapters) {
 		this.chapters = chapters;
+	}
+
+	/**
+	 * Invoke each section's output method.
+	 */
+	public void output() {
+		for (Chapter c : chapters) {
+			for (Section s : c.getSubSections()) {
+				s.fetchTranscripts();
+				s.output();
+			}
+		}
 	}
 
 }
