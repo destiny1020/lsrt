@@ -78,7 +78,7 @@ public class CourseTest {
 
 	@Test
 	public void testOutputTranscripts() {
-		String url = "http://www.lynda.com/Bootstrap-tutorials/Up-Running-Bootstrap-3/133339-2.html";
+		String url = "http://www.lynda.com/Bootstrap-tutorials/Bootstrap-3-Advanced-Web-Development/124079-2.html";
 		Course course = new Course(url);
 
 		course.output();

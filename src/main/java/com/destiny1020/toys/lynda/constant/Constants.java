@@ -4,6 +4,7 @@ public class Constants {
 
 	public static String LANG_INPUT = "en";
 	public static String LANG_OUTPUT = "zh-CN";
+	public static String NO_TRANS_OUTPUT = "";
 
 	public static String FILE_SEPARATOR = System.getProperty("line.separator");
 	public static String SRT_EXT = "srt";

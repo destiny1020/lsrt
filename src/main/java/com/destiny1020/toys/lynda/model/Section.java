@@ -76,12 +76,17 @@ public class Section extends ResourceBase implements ITranscript {
 	}
 
 	public void fetchTranscripts() {
-		fetchTranscripts(Constants.LANG_OUTPUT);
+		fetchTranscripts(Constants.NO_TRANS_OUTPUT);
 	}
 
 	private TranscriptPackage generateTranscriptPackage(Elements transcripts,
 			String langCd) {
-		transcripts.add(transcripts.get(transcripts.size() - 1));
+		// duplicate the last one with extended timeline
+		Element last = transcripts.last();
+		transcripts.add(last.clone());
+		last = transcripts.last();
+		last.attr(ATTR_DATA_DURATION, String.valueOf(Double.parseDouble(last
+				.attr(ATTR_DATA_DURATION)) + 60.0));
 		List<Pair<String, Pair<String, String>>> results = new LinkedList<Pair<String, Pair<String, String>>>();
 
 		Translator translator = Translator.getInstance();
@@ -95,8 +100,12 @@ public class Section extends ResourceBase implements ITranscript {
 					current.attr(ATTR_DATA_DURATION),
 					next.attr(ATTR_DATA_DURATION));
 			subtitle2 = current.text();
-			subtitle1 = translator.translate(subtitle2, Constants.LANG_INPUT,
-					langCd);
+			if (langCd.isEmpty()) {
+				subtitle1 = "";
+			} else {
+				subtitle1 = translator.translate(subtitle2,
+						Constants.LANG_INPUT, langCd);
+			}
 
 			results.add(Pair.of(timeline, Pair.of(subtitle1, subtitle2)));
 		}
@@ -152,12 +161,15 @@ public class Section extends ResourceBase implements ITranscript {
 	private void writeSnippet(BufferedWriter bw,
 			Pair<String, Pair<String, String>> snippet, int idx)
 			throws IOException {
+		String lang1 = snippet.getRight().getLeft();
 		bw.write(String.valueOf(idx));
 		bw.write(Constants.FILE_SEPARATOR);
 		bw.write(snippet.getLeft());
 		bw.write(Constants.FILE_SEPARATOR);
-		bw.write(snippet.getRight().getLeft());
-		bw.write(Constants.FILE_SEPARATOR);
+		if (!lang1.isEmpty()) {
+			bw.write(lang1);
+			bw.write(Constants.FILE_SEPARATOR);
+		}
 		bw.write(snippet.getRight().getRight());
 		bw.write(Constants.FILE_SEPARATOR);
 		bw.write(Constants.FILE_SEPARATOR);
